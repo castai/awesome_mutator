@@ -5,10 +5,13 @@ from kubernetes import client, config
 import base64
 import json
 import logging
+import os
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("awesome_mutator")
+
+namespaces = os.environ['NAMESPACES']
 
 app = FastAPI()
 
@@ -26,48 +29,48 @@ def escape_json_pointer(key: str) -> str:
 # Function to create JSON patches for pod mutations
 def create_json_patch(pod: V1Pod, rules: list) -> list:
     patches = []
-    logger.info(f"Creating JSON patches for pod: {pod.metadata.name}")
-
+    logger.info(f"Creating JSON patches for pod: {pod.metadata.name} in  {pod.metadata.namespace}")
     for rule in rules:
-        if pod_matches_selector(pod, rule['podSelector']):
-            logger.info(f"Pod matches rule '{rule['name']}': Applying mutations")
+        if pod.metadata.namespace in namespaces or namespaces == "": 
+            if pod_matches_selector(pod, rule['podSelector']):
+                logger.info(f"Pod matches rule '{rule['name']}': Applying mutations")
 
-            # Ensure node_selector is not None
-            node_selector = pod.spec.node_selector if pod.spec.node_selector else {}
-            
-            # If nodeSelector is empty, create a patch to add an empty object
-            if not pod.spec.node_selector:
-                patches.append({"op": "add", "path": "/spec/nodeSelector", "value": {}})
-                logger.info("Added patch to create nodeSelector")
-
-            # Remove specified node selectors
-            for selector in rule['removeNodeSelectors']:
-                if selector in node_selector:
-                    patches.append({"op": "remove", "path": f"/spec/nodeSelector/{escape_json_pointer(selector)}"})
-                    logger.info(f"Removing node selector '{selector}'")
-
-            # Add specified node selectors
-            for key, value in rule['addNodeSelectors'].items():
-                escaped_key = escape_json_pointer(key)
-                patches.append({"op": "add", "path": f"/spec/nodeSelector/{escaped_key}", "value": value})
-                logger.info(f"Adding node selector '{key}: {value}'")
-
-            # Add tolerations if specified
-            if 'addTolerations' in rule:
-                if not pod.spec.tolerations:
-                    # If no tolerations exist, create an empty list
-                    patches.append({"op": "add", "path": "/spec/tolerations", "value": []})
-                    logger.info("Added patch to create tolerations list")
+                # Ensure node_selector is not None
+                node_selector = pod.spec.node_selector if pod.spec.node_selector else {}
                 
-                for toleration in rule['addTolerations']:
-                    # Escape keys in toleration to handle special characters
-                    escaped_toleration = {escape_json_pointer(k): v for k, v in toleration.items()}
-                    patches.append({"op": "add", "path": "/spec/tolerations/-", "value": escaped_toleration})
-                    logger.info(f"Adding toleration: {escaped_toleration}")
+                # If nodeSelector is empty, create a patch to add an empty object
+                if not pod.spec.node_selector:
+                    patches.append({"op": "add", "path": "/spec/nodeSelector", "value": {}})
+                    logger.info("Added patch to create nodeSelector")
 
-            # Stop processing further rules after the first match
-            logger.info(f"Stopping rule evaluation after applying rule '{rule['name']}'")
-            break
+                # Remove specified node selectors
+                for selector in rule['removeNodeSelectors']:
+                    if selector in node_selector:
+                        patches.append({"op": "remove", "path": f"/spec/nodeSelector/{escape_json_pointer(selector)}"})
+                        logger.info(f"Removing node selector '{selector}'")
+
+                # Add specified node selectors
+                for key, value in rule['addNodeSelectors'].items():
+                    escaped_key = escape_json_pointer(key)
+                    patches.append({"op": "add", "path": f"/spec/nodeSelector/{escaped_key}", "value": value})
+                    logger.info(f"Adding node selector '{key}: {value}'")
+
+                # Add tolerations if specified
+                if 'addTolerations' in rule:
+                    if not pod.spec.tolerations:
+                        # If no tolerations exist, create an empty list
+                        patches.append({"op": "add", "path": "/spec/tolerations", "value": []})
+                        logger.info("Added patch to create tolerations list")
+                    
+                    for toleration in rule['addTolerations']:
+                        # Escape keys in toleration to handle special characters
+                        escaped_toleration = {escape_json_pointer(k): v for k, v in toleration.items()}
+                        patches.append({"op": "add", "path": "/spec/tolerations/-", "value": escaped_toleration})
+                        logger.info(f"Adding toleration: {escaped_toleration}")
+
+                # Stop processing further rules after the first match
+                logger.info(f"Stopping rule evaluation after applying rule '{rule['name']}'")
+                break
 
     logger.info(f"Generated patches: {patches}")
     return patches

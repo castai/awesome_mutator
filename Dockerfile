@@ -21,8 +21,7 @@ COPY . .
 EXPOSE 443
 
 # Define environment variables for the certificates
-ENV SSL_CERTFILE=/app/cert.pem
-ENV SSL_KEYFILE=/app/key.pem
+ENV NAMESPACES=""
 
 # Start the FastAPI server with TLS support
 CMD ["uvicorn", "awesome_mutator:app", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile", "/etc/webhook/certs/webhook.key", "--ssl-certfile", "/etc/webhook/certs/webhook.crt"]

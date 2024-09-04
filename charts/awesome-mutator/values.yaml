@@ -4,10 +4,31 @@
 
 replicaCount: 1
 
+rules: |
+    [
+      {
+        "name": "rule1",
+        "podSelector": "app=myapp,environment=prod",
+        "removeNodeSelectors": ["disktype"],
+        "addNodeSelectors": {"scheduling.cast.ai/node-template": "test-mut-nt"}
+      },
+      {
+        "name": "remove-agentpool-for-canyon",
+        "podSelector": "app=canyon",
+        "removeNodeSelectors": ["agentpool"],
+        "addNodeSelectors": {"scheduling.cast.ai/node-template": "test-mut-nt-3"},
+        "addTolerations": [
+          {"key": "scheduling.cast.ai/node-template", "operator": "Equal", "value": "backend", "effect": "NoSchedule"}
+        ]
+      }
+    ]
+
+namespaces: ""
+
 image:
   repository: ghcr.io/castai/awesome_mutator
   pullPolicy: IfNotPresent
-  tag: "9"
+  tag: "12"
 
 imagePullSecrets: []
 nameOverride: ""
