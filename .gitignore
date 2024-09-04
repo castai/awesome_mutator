@@ -171,3 +171,6 @@ celerybeat.pid
 *.orig
 *.swp
 *.swo
+
+*.crt
+*.key

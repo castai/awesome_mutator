@@ -20,7 +20,7 @@ echo "$AWESOME_MUTATOR_TAG_VERSION" > "$VERSION_FILE"
 # Build the multi-architecture image and push to Docker Hub
 docker buildx create --name mybuilder --use
 docker buildx inspect --bootstrap
-docker buildx build --platform linux/amd64,linux/arm64 -t lkup77/awesome_mutator:$AWESOME_MUTATOR_TAG_VERSION --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t  ghcr.io/castai/awesome_mutator:$AWESOME_MUTATOR_TAG_VERSION --push .
 
 # Output the latest version
 echo "The latest version is: $AWESOME_MUTATOR_TAG_VERSION"

@@ -25,4 +25,4 @@ ENV SSL_CERTFILE=/app/cert.pem
 ENV SSL_KEYFILE=/app/key.pem
 
 # Start the FastAPI server with TLS support
-CMD ["uvicorn", "awesome_mutator:app", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile", "/app/key.pem", "--ssl-certfile", "/app/cert.pem"]
+CMD ["uvicorn", "awesome_mutator:app", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile", "/etc/webhook/certs/webhook.key", "--ssl-certfile", "/etc/webhook/certs/webhook.crt"]

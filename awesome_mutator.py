@@ -103,7 +103,7 @@ def load_mutation_rules() -> list:
 
     try:
         # Fetch the ConfigMap
-        config_map = v1.read_namespaced_config_map("mutation-rules-configmap", "default")
+        config_map = v1.read_namespaced_config_map("mutation-rules-configmap", "castai-agent")
         rules_json = config_map.data.get("rules.json", "[]")  # Default to an empty list if not found
         rules = json.loads(rules_json)
         logger.info(f"Loaded mutation rules from ConfigMap: {rules}")
@@ -163,4 +163,4 @@ async def mutate(request: AdmissionReviewRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("awesome_mutator:app", host="0.0.0.0", port=443, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+    uvicorn.run("awesome_mutator:app", host="0.0.0.0", port=443, ssl_keyfile="/etc/webhook/certs/webhook.key", ssl_certfile="/etc/webhook/certs/webhook.crt")

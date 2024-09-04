@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "awesome-mutator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "awesome-mutator.labels" . | nindent 4 }}-configmap-reader
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "awesome-mutator.fullname" . }}
+  namespace:  {{ .Release.Namespace }}
+  # Replace with your namespace
+subjects:
+  - kind: ServiceAccount
+    name:  {{ include "awesome-mutator.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "awesome-mutator.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
