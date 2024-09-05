@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: test-pod-agentpool
-  namespace: default
+  namespace: kube-system
   labels:
-    app: canyon
+    app.kubernetes.io/managed-by: Helm
 spec:
   nodeSelector:
     agentpool: copprfpool

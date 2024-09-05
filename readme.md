@@ -2,6 +2,9 @@
 
 **Awesome Mutator** is a Kubernetes mutating webhook that dynamically modifies pod specifications based on custom rules defined in a ConfigMap. It can add or remove node selectors, tolerations, and other configurations to match specific conditions.
 
+## How to install install
+- helm upgrade --install -n castai-agent awesome-mutator oci://ghcr.io/castai/awesome-mutator-charts/awesome-mutator
+
 ## Features
 
 - **Dynamic Mutations**: Modify pod specifications on-the-fly based on configurable rules.
@@ -9,24 +12,13 @@
 - **ConfigMap Driven**: Easily update mutation rules without changing the webhook code.
 - **Fail-Open Mechanism**: Ensures that pod creation continues even if the webhook encounters errors.
 
-## Prerequisites
+
+## Development Prerequisites
 
 - **Kubernetes Cluster**: A running Kubernetes cluster.
 - **kubectl**: Command-line tool to interact with the Kubernetes cluster.
 - **Docker**: To build and manage container images.
 - **Kubernetes Python Client**: Used to interact with the Kubernetes API.
-
-## Setup and Deployment
-- You can pull the pre-built docker image from: https://hub.docker.com/repository/docker/lkup77/awesome_mutator/general
-
-## Apply the k8s scripts
-- kubectl apply -f k8s
-
-This will create the needed rbac, service, deployment and webhook along with a sample configuration that you can change in *awesome-mutator-config-map.yaml* 
-
-Note that when you first apply the k8s manifests, the webhook may not be up yet so the test pods will fail scheduling. Just delete them and retry once you've confirmed the webhook is up and running ok.
-
-You should be able to see the startup logs as follows:
 
 ```
 INFO:awesome_mutator:Loaded mutation rules from ConfigMap: [{'name': 'rule1', 'podSelector': 'app=myapp,environment=prod', 'removeNodeSelectors': ['disktype'], 'addNodeSelectors': {'scheduling.cast.ai/node-template': 'test-mut-nt'}}, {'name': 'remove-agentpool-for-canyon', 'podSelector': 'app=canyon', 'removeNodeSelectors': ['agentpool'], 'addNodeSelectors': {'scheduling.cast.ai/node-template': 'test-mut-nt-3'}, 'addTolerations': [{'key': 'scheduling.cast.ai/node-template', 'operator': 'Equal', 'value': '', 'effect': 'NoSchedule'}]}]
