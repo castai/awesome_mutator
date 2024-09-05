@@ -2,7 +2,7 @@
 
 **Awesome Mutator** is a Kubernetes mutating webhook that dynamically modifies pod specifications based on custom rules defined in a ConfigMap. It can add or remove node selectors, tolerations, and other configurations to match specific conditions.
 
-## How to install install
+## How to install
 - helm upgrade --install -n castai-agent awesome-mutator oci://ghcr.io/castai/awesome-mutator-charts/awesome-mutator
 
 ## Features
