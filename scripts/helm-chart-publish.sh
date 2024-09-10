@@ -17,7 +17,7 @@ for cmd in helm git gh; do
 done
 
 # Configuration
-CHART_DIR="../charts/awesome-mutator" 
+CHART_DIR="charts/awesome-mutator" 
 GITHUB_USERNAME=castai
 GITHUB_REPO=$(basename $(git rev-parse --show-toplevel))
 

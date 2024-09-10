@@ -32,7 +32,7 @@ def create_json_patch(pod: V1Pod, rules: list) -> list:
     logger.info(f"Creating JSON patches for pod: {pod.metadata.name} in  {pod.metadata.namespace}")
     for rule in rules:
         if pod.metadata.namespace in namespaces or namespaces == "": 
-            if pod_matches_selector(pod, rule['podSelector']):
+            if not "podSelector" in rule or pod_matches_selector(pod, rule['podSelector']):
                 logger.info(f"Pod matches rule '{rule['name']}': Applying mutations")
 
                 # Ensure node_selector is not None

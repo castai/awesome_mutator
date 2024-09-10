@@ -14,7 +14,6 @@ rules: |
       },
       {
         "name": "remove-agentpool-for-canyon",
-        "podSelector": "app=canyon",
         "removeNodeSelectors": ["agentpool"],
         "addNodeSelectors": {"scheduling.cast.ai/node-template": "test-mut-nt-3"},
         "addTolerations": [
@@ -28,7 +27,7 @@ namespaces: ""
 image:
   repository: ghcr.io/castai/awesome_mutator
   pullPolicy: IfNotPresent
-  tag: "12"
+  tag: "13"
 
 imagePullSecrets: []
 nameOverride: ""
