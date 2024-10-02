@@ -16,5 +16,5 @@ webhooks:
         apiVersions: ["v1"]
         resources: ["pods"]
     admissionReviewVersions: ["v1"]
-    failurePolicy: Ignore  # Fail open on webhook errors
+    failurePolicy: {{ .Values.failurePolicy }}  # Fail
     sideEffects: None

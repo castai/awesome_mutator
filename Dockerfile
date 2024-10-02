@@ -24,4 +24,4 @@ EXPOSE 443
 ENV NAMESPACES=""
 
 # Start the FastAPI server with TLS support
-CMD ["uvicorn", "awesome_mutator:app", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile", "/etc/webhook/certs/webhook.key", "--ssl-certfile", "/etc/webhook/certs/webhook.crt"]
+CMD ["uvicorn", "awesome_mutator:app","--workers", "10", "--host", "0.0.0.0", "--port", "443", "--ssl-keyfile", "/etc/webhook/certs/webhook.key", "--ssl-certfile", "/etc/webhook/certs/webhook.crt"]
